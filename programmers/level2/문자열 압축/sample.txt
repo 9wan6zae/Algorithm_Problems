@@ -1,0 +1,14 @@
+s = "aabbaccc"
+result = 7
+
+s = "ababcdcdababcdcd"
+result = 9
+
+s = "abcabcdede"
+result = 8
+
+s = "abcabcabcabcdededededede"
+result = 14
+
+s = "xababcdcdababcdcd"
+result = 17
