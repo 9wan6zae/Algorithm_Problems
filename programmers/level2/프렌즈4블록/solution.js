@@ -1,6 +1,6 @@
 function solution(m, n, board) {
   board = board.map(v => v.split(''))
-  
+
   while(true) {
       const remove = []
       for (let i = 0; i < m - 1; i++) {
@@ -13,7 +13,9 @@ function solution(m, n, board) {
           }
       }
       if (!remove.length) {
-          return [].concat(...board).filter((v) => !v).length;
+          return board.reduce((acc, cur) => {
+              return acc += cur.filter(v => !v).length
+          }, 0)
       }
       for (let pos of remove) {
           let [col, row] = pos
@@ -22,10 +24,10 @@ function solution(m, n, board) {
           board[col + 1][row] = 0
           board[col + 1][row + 1] = 0    
       }
-      
+
       for (let i = m - 1; i > 0; i--) {
           if (!board[i].some(v => !v)) continue
-          
+
           for (let j = 0; j < n; j++) {
               for (let k = i - 1; k >= 0 && !board[i][j]; k--) {
                   if (board[k][j]) {
