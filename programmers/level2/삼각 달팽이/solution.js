@@ -3,11 +3,10 @@ function solution(n) {
   let count = 1
   let row = -1
   let col = 0
-  while (n > 0) {
-      for (let i = 0; i < n; i++) answer[++row][col] = count++
-      for (let i = 0; i < n - 1; i++) answer[row][++col] = count++
-      for (let i = 0; i < n - 2; i++) answer[--row][--col] = count++
-      n -= 3
+  for (let i = n; i > 0; i -= 3 ) {
+      for (let j = 0; j < i; j++) answer[++row][col] = count++
+      for (let j = 0; j < i - 1; j++) answer[row][++col] = count++
+      for (let j = 0; j < i - 2; j++) answer[--row][--col] = count++
   }
   return [].concat(...answer)
 }
