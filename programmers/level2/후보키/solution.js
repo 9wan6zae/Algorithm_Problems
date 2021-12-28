@@ -4,13 +4,13 @@ function solution(relation) {
   
   let bitmasks = []
   
-  for (let i = 0; i < (1 << atts); i++) {
-      let bit = ''
+  for (let i = 1; i < (1 << atts); i++) {
+      let bitmask = ''
       for (let j = 0; j < atts; j++) {
-          if ((i & (1 << j)) !== 0) bit += j
+          if ((i & (1 << j)) !== 0) bitmask += j
       }
-      bitmasks.push(bit)
-      bit = ''
+      bitmasks.push(bitmask)
+      bitmask = ''
   }
   
   bitmasks.sort((a, b) => a.length - b.length)
@@ -21,14 +21,14 @@ function solution(relation) {
       
       relation.map(tuple => {
           let candidate = ''
-          for (let i = 0; i < bitmask.length; i++) {
-              candidate += tuple[bitmask[i]]
+          for (let bit of bitmask) {
+              candidate += tuple[bit]
           }
           set.add(candidate)
       })
       if (set.size === relation.length) {
           answer += 1
-          bitmasks = bitmasks.filter(b => !bitmask.every(v => b.includes(v)))
+          bitmasks = bitmasks.filter(_bitmask => !bitmask.every(bit => _bitmask.includes(bit)))
       }
   }
   
