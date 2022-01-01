@@ -43,55 +43,38 @@ pop 장르는 3,100회 재생되었으며, pop 노래는 다음과 같습니다.
 
 **문제풀이**<br/>
 
-이 문제를 풀 때 고려할 점은 정렬을 어떻게 할 것이라고 생각했습니다. 문제에서 제시된 정렬은 아래의 3가지입니다.
-
-1. 잔체 장르의 재생 순 정렬
-2. 장르 내에서의 재생 순 정렬
-3. 장르 내 재생 횟수가 같으면 고유 번호가 작은 순 정렬
-
-그런데 3번의 정렬은 고려를 하지 않았는데 `id`가 랜덤으로 부여된 것이 아니고 배열 순서대로 부여되어 있기 때문에 정렬을 해도 같은 재생 수를 가지고 있는 것들의 순서는 변경되지 않을 것이기에 자동으로 3번의 정렬 기준은 적용된다고 생각했기 때문입니다.
-
-코드는 아래와 같이 작성하였습니다.
-
+장르별로 분류하기 위해 `Map` 객체 `hash`를 생성합니다.
+``` js
+const hash = new Map()
 ```
-function solution(genres, plays) {
-  var answer = [];
-
-  // 1
-  const hash = {}
-  
-  for (let i = 0; i < genres.length; i++) {
-      if (hash[genres[i]]) {
-          hash[genres[i]].push({play: plays[i], id: i})
-      } else {
-          hash[genres[i]] = [{play: plays[i], id: i}]
-      }
-  }
-  
-  // 2
-  let top2_by_genre = []
-  
-  for (let key in hash) {
-      // 장르별 음악을 play 수로 정렬
-      const songs = sort_songs(hash[key])
-      
-      // top2 구하기
-      top2_by_genre.push(find_top_2(songs))
-  }
-  
-  // 3
-  top2_by_genre = sort_songs(top2_by_genre)
-  
-  for (let i = 0; i < top2_by_genre.length; i++) {
-      for (let j = 0; j < top2_by_genre[i].top2.length; j++) {
-          answer.push(top2_by_genre[i].top2[j])
-      }
-  }
-  
-  return answer;
-}
+`genres`와 `plays`를 쌍으로 묶기 위해 `Array`의 `map` 메서드를 이용해 묶습니다.
+``` js
+genres.map((genre, i) => [genre, plays[i]])
+```
+묶은 배열을 순회하면서 장르별로 분류합니다. 값으로 총 재생수와 음악 배열을 가지게 되고 음악 배열은 내림차순 정렬과 장르별 가장 많이 재생된 2곡과 인덱스를 가집니다.
+``` js
+genres
+    .map((genre, i) => [genre, plays[i]])
+    .forEach(([genre, play], i) => {
+        const data = hash.get(genre) || { total: 0, music: [] }
+        hash.set(genre, {
+            total: data.total + play,
+            music: [...data.music, {play, i}]
+                .sort((a, b) => b.play - a.play)
+                .slice(0, 2)
+        })
+    })
 ```
 
-1. 각 장르별로 키를 가지는 `hash`를 만들고 분류합니다.
-2. 장르 내 음악을 `play` 수를 기준으로 내림차순 정렬하고, 상위 2곡을 고릅니다.
-3. 고른 각 장르별 상위 2곡이 있는 배열을 `play` 수를 기준으로 내림차순 정렬하고 각 곡의 `id`를 `answer`에 넣어줍니다.
+만들어진 `hash`를 배열화한 후 총 재생수 순으로 정렬합니다.
+``` js
+[...hash.entries()]
+    .sort((a, b) => b[1].total - a[1].total)
+```
+정렬된 음악의 인덱스만 필요하므로 추출해 배열로 만든 후 반환합니다.
+``` js
+return [...hash.entries()]
+            .sort((a, b) => b[1].total - a[1].total)
+            .flatMap(v => v[1].music)
+            .map(v => v.i)
+```
