@@ -1,23 +1,17 @@
 function solution(id_list, report, k) {
-  const answer = Array(id_list.length).fill(0)
-  const reportList = {}
-
-  id_list.forEach(id => {
-      reportList[id] = []
-  })
-
-  report.forEach(info => {
-      const [userId, reportId] = info.split(' ')
-      if (!reportList[reportId].includes(userId)) reportList[reportId].push(userId)
-  })
-
-  for (const key in reportList) {
-      if (reportList[key].length >= k) {
-          reportList[key].forEach(id => {
-              answer[id_list.indexOf(id)] += 1
-          })
-      }
-  }
-
-  return answer;
+    report = [...new Set(report)].map(info => info.split(' '))
+    const reportCount = {}
+    const reportHistory = {}
+    
+    report.forEach(info => {
+        reportCount[info[1]] = reportCount[info[1]] + 1 || 1
+    })
+    
+    report.forEach(info => {
+        if (reportCount[info[1]] >= k) {
+            reportHistory[info[0]] = reportHistory[info[0]] + 1 || 1
+        }
+    })
+    
+    return id_list.map(id => reportHistory[id] || 0)
 }
