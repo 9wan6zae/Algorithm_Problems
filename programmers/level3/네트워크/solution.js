@@ -1,6 +1,6 @@
 function solution(n, computers) {
   let answer = 0;
-  let visited = Array(n + 1).fill(false)
+  const visited = Array(n).fill(false)
   
   const dfs = (node) => {
       visited[node] = true
