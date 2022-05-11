@@ -2,9 +2,9 @@ function solution(n, money) {
   const dp = [1, ...new Array(n).fill(0)]
   
   for (const price of money) {
-      for (let j = 0; j <= n; j += 1) {
-          if (j >= price) {
-              dp[j] += (dp[j - price] % 1000000007)
+      for (let i = 0; i <= n; i += 1) {
+          if (i >= price) {
+              dp[i] += (dp[i - price] % 1000000007)
           }
       }
   }
